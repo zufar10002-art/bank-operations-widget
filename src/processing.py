@@ -2,12 +2,13 @@
 Модуль для обработки банковских операций.
 """
 
-from typing import Dict, List
+from typing import Dict, List, Any
+from datetime import datetime
 
 
 def filter_by_state(
-    operations: List[Dict], state: str = "EXECUTED"
-) -> List[Dict]:
+    operations: List[Dict[str, Any]], state: str = "EXECUTED"
+) -> List[Dict[str, Any]]:
     """
     Фильтрует список операций по статусу.
 
@@ -26,34 +27,34 @@ def filter_by_state(
 
 
 def sort_by_date(
-    operations: List[Dict], reverse: bool = True
-) -> List[Dict]:
+    operations: List[Dict[str, Any]], reverse: bool = True
+) -> List[Dict[str, Any]]:
     """
     Сортирует операции по дате.
 
     Args:
         operations: Список словарей с операциями
         reverse: Порядок сортировки
-                 (True - по убыванию, False - по возрастанию)
+                (True - по убыванию, False - по возрастанию)
 
     Returns:
         Отсортированный список операций
     """
-    return sorted(operations, key=lambda x: x.get("date", ""), reverse=reverse)
+    return sorted(
+        operations,
+        key=lambda x: datetime.fromisoformat(
+            x.get("date", "0001-01-01T00:00:00.000000")
+        ),
+        reverse=reverse
+    )
 
 
-# Тестовые данные для проверки функций
 if __name__ == "__main__":
-    # Пример данных из задания
     test_operations = [
-        {"id": 41428829, "state": "EXECUTED",
-         "date": "2019-07-03T18:35:29.512364"},
-        {"id": 939719570, "state": "EXECUTED",
-         "date": "2018-06-30T02:08:58.425572"},
-        {"id": 594226727, "state": "CANCELED",
-         "date": "2018-09-12T21:27:25.241689"},
-        {"id": 615064591, "state": "CANCELED",
-         "date": "2018-10-14T08:21:33.419441"}
+        {"id": 41428829, "state": "EXECUTED", "date": "2019-07-03T18:35:29.512364"},
+        {"id": 939719570, "state": "EXECUTED", "date": "2018-06-30T02:08:58.425572"},
+        {"id": 594226727, "state": "CANCELED", "date": "2018-09-12T21:27:25.241689"},
+        {"id": 615064591, "state": "CANCELED", "date": "2018-10-14T08:21:33.419441"}
     ]
 
     print("Тестирование filter_by_state:")
